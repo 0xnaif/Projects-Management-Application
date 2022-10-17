@@ -2,7 +2,7 @@ import java.util.Date;
 
 public class Project {
 	private int numOfStages;
-	static private String nodeID, customerID;
+	private String nodeID, customerID;
 	private Date startDate, endDate;
 	private Date createDate, changeDate;
 	private Stage stage;
