@@ -5,21 +5,34 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import javafx.scene.control.Cell;
+
 public class ProjectManager {
 	private static ArrayList<Project> projects = new ArrayList<Project>();
+
+	public static void main(String[] args) throws IOException {
+		read();
+	}
 
 	public ProjectManager() {
 
 	}
 
-	public void read() throws IOException {
+	public static ArrayList<Project> getProjects() {
+		return projects;
+	}
+
+	public static void read() throws IOException {
 		readProjectFile("test.xlsx");
 		readStageFile("test2.xlsx", "test3.xlsx");
+
 	}
 
 	private static void readProjectFile(String fileName) throws IOException {
@@ -32,13 +45,22 @@ public class ProjectManager {
 
 		while (row != null) {
 			Project project = new Project();
-
 			String nodeID = row.getCell(0).getStringCellValue();
 			String customerID = row.getCell(1).getStringCellValue();
 			int numOfStages = (int) row.getCell(2).getNumericCellValue();
+			XSSFCell cell = row.getCell(3);
+			Date startDate;
+			if (cell == null || cell.getCellType() == CellType.BLANK) {
+				startDate = null;
+			} else
+				startDate = cell.getDateCellValue();
 
-			Date startDate = row.getCell(3).getDateCellValue();
-			Date endDate = row.getCell(4).getDateCellValue();
+			cell = row.getCell(4);
+			Date endDate;
+			if (cell == null || cell.getCellType() == CellType.BLANK) {
+				endDate = null;
+			} else
+				endDate = cell.getDateCellValue();
 
 			String crDate = row.getCell(7).getStringCellValue();
 			day = Integer.parseInt(crDate.substring(0, 2));
@@ -59,11 +81,16 @@ public class ProjectManager {
 			project.setEndDate(endDate);
 			project.setCreateDate(createDate);
 			project.setChangeDate(changeDate);
-			projects.add(project);
+			addProjects(project);
+			i += 1;
 
-			row = sheet.getRow(++i);
+			row = sheet.getRow(i);
 		}
 
+	}
+
+	public static void addProjects(Project projcet) {
+		projects.add(projcet);
 	}
 
 	private static void readStageFile(String fileName1, String fileName2) throws IOException {
@@ -84,7 +111,12 @@ public class ProjectManager {
 			String objectID = sheet1Row.getCell(0).getStringCellValue();
 			int docNum = (int) sheet1Row.getCell(1).getNumericCellValue();
 			int newValue = (int) sheet1Row.getCell(5).getNumericCellValue();
-			int oldValue = (int) sheet1Row.getCell(6).getNumericCellValue();
+			int oldValue;
+			XSSFCell cell = sheet1Row.getCell(6);
+			if (cell == null || cell.getCellType() == CellType.BLANK) {
+				oldValue = 0;
+			} else
+				oldValue = (int) cell.getNumericCellValue();
 			Date endDate = sheet2Row.getCell(3).getDateCellValue();
 			stage.setObjectID(objectID);
 			stage.setDocNum(docNum);
@@ -92,13 +124,11 @@ public class ProjectManager {
 			stage.setOldValue(oldValue);
 			stage.setEndDate(endDate);
 
-			for (Project e : projects) {
-				if (e.getNodeID().equals(stage.getObjectID())) {
+			for (Project e : projects)
+				if (e.getNodeID().equals(stage.getObjectID()))
 					e.setStage(stage);
-				}
-			}
 
-			i += i;
+			i += 1;
 			sheet1Row = sheet1.getRow(i);
 			sheet2Row = sheet2.getRow(i);
 		}
