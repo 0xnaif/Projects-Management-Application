@@ -5,6 +5,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.xssf.usermodel.XSSFCell;
@@ -13,6 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import javafx.scene.control.Cell;
+import javafx.scene.control.TableView;
 
 public class ProjectManager {
 	private static ArrayList<Project> projects = new ArrayList<Project>();
@@ -30,16 +35,16 @@ public class ProjectManager {
 	}
 
 	public static void read() throws IOException {
-		readProjectFile("test.xlsx");
-		readStageFile("test2.xlsx", "test3.xlsx");
+		readProjectFile("Projects.xls");
+		readStageFile("Stages.xls", "Stages_Detailed.xls");
 
 	}
 
 	private static void readProjectFile(String fileName) throws IOException {
 		FileInputStream input = new FileInputStream(new File(fileName));
-		XSSFWorkbook wb = new XSSFWorkbook(input);
-		XSSFSheet sheet = wb.getSheetAt(0);
-		XSSFRow row = sheet.getRow(1);
+		HSSFWorkbook wb = new HSSFWorkbook(input);
+		HSSFSheet sheet = wb.getSheetAt(0);
+		HSSFRow row = sheet.getRow(1);
 		int i = 1;
 		int day, month, year;
 
@@ -48,7 +53,7 @@ public class ProjectManager {
 			String nodeID = row.getCell(0).getStringCellValue();
 			String customerID = row.getCell(1).getStringCellValue();
 			int numOfStages = (int) row.getCell(2).getNumericCellValue();
-			XSSFCell cell = row.getCell(3);
+			HSSFCell cell = row.getCell(3);
 			Date startDate;
 			if (cell == null || cell.getCellType() == CellType.BLANK) {
 				startDate = null;
@@ -96,13 +101,13 @@ public class ProjectManager {
 	private static void readStageFile(String fileName1, String fileName2) throws IOException {
 		FileInputStream input1 = new FileInputStream(new File(fileName1));
 		FileInputStream input2 = new FileInputStream(new File(fileName2));
-		XSSFWorkbook wb1 = new XSSFWorkbook(input1);
-		XSSFWorkbook wb2 = new XSSFWorkbook(input2);
+		HSSFWorkbook wb1 = new HSSFWorkbook(input1);
+		HSSFWorkbook wb2 = new HSSFWorkbook(input2);
 
-		XSSFSheet sheet1 = wb1.getSheetAt(0);
-		XSSFSheet sheet2 = wb2.getSheetAt(0);
-		XSSFRow sheet1Row = sheet1.getRow(1);
-		XSSFRow sheet2Row = sheet2.getRow(1);
+		HSSFSheet sheet1 = wb1.getSheetAt(0);
+		HSSFSheet sheet2 = wb2.getSheetAt(0);
+		HSSFRow sheet1Row = sheet1.getRow(1);
+		HSSFRow sheet2Row = sheet2.getRow(1);
 		int i = 1;
 
 		while (sheet1Row != null) {
@@ -112,7 +117,7 @@ public class ProjectManager {
 			int docNum = (int) sheet1Row.getCell(1).getNumericCellValue();
 			int newValue = (int) sheet1Row.getCell(5).getNumericCellValue();
 			int oldValue;
-			XSSFCell cell = sheet1Row.getCell(6);
+			HSSFCell cell = sheet1Row.getCell(6);
 			if (cell == null || cell.getCellType() == CellType.BLANK) {
 				oldValue = 0;
 			} else
@@ -126,7 +131,7 @@ public class ProjectManager {
 
 			for (Project e : projects)
 				if (e.getNodeID().equals(stage.getObjectID()))
-					e.setStage(stage);
+					e.addStage(stage);
 
 			i += 1;
 			sheet1Row = sheet1.getRow(i);
