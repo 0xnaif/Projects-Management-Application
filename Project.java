@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Project {
@@ -5,7 +6,7 @@ public class Project {
 	private String nodeID, customerID;
 	private Date startDate, endDate;
 	private Date createDate, changeDate;
-	private Stage stage;
+	private ArrayList<Stage> stages = new ArrayList<>();
 
 	public Project() {
 
@@ -67,12 +68,12 @@ public class Project {
 		this.changeDate = changeDate;
 	}
 
-	public Stage getStage() {
-		return stage;
+	public ArrayList<Stage> getStages() {
+		return stages;
 	}
 
-	public void setStage(Stage stage) {
-		this.stage = stage;
+	public void addStage(Stage stage) {
+		stages.add(stage);
 	}
 
 }
