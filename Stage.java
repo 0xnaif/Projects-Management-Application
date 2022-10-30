@@ -1,8 +1,11 @@
+package stage;
+
 import java.util.Date;
 
 public class Stage {
 	private String objectID;
 	private int docNum;
+	private String changeIndicator;
 	private Date endDate;
 	private int newValue;
 	private int oldValue;
@@ -49,6 +52,14 @@ public class Stage {
 
 	public void setOldValue(int oldValue) {
 		this.oldValue = oldValue;
+	}
+
+	public String getChangeIndicator() {
+		return changeIndicator;
+	}
+
+	public void setChangeIndicator(String changeIndicator) {
+		this.changeIndicator = changeIndicator;
 	}
 
 }
