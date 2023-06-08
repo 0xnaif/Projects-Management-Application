@@ -1,7 +1,4 @@
 import java.util.ArrayList;
-import java.util.Date;
-
-import stage.Stage;
 
 public class Project {
 	private int numOfStages;
@@ -12,28 +9,28 @@ public class Project {
 
 	}
 
-	public String getNodeID() {
-		return nodeID;
-	}
-
 	public void setNodeID(String nodeID) {
 		this.nodeID = nodeID;
 	}
 
-	public String getCustomerID() {
-		return customerID;
+	public String getNodeID() {
+		return nodeID;
 	}
 
 	public void setCustomerID(String customerID) {
 		this.customerID = customerID;
 	}
 
-	public int getNumOfStages() {
-		return numOfStages;
+	public String getCustomerID() {
+		return customerID;
 	}
 
 	public void setNumOfStages(int numOfStages) {
 		this.numOfStages = numOfStages;
+	}
+
+	public int getNumOfStages() {
+		return numOfStages;
 	}
 
 	public ArrayList<Stage> getStages() {
