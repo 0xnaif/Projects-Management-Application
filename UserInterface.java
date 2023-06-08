@@ -1,8 +1,5 @@
-
 import java.io.IOException;
-
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -16,7 +13,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-
 import javafx.stage.Stage;
 
 public class UserInterface extends Application {
@@ -36,43 +32,35 @@ public class UserInterface extends Application {
 		col1.setCellValueFactory(new PropertyValueFactory<>("customerID"));
 		TableColumn<Project, Integer> col2 = new TableColumn<>("Stage");
 		col2.setCellValueFactory(new PropertyValueFactory<>("numOfStages"));
-
+		col1.setPrefWidth(100);
+		col2.setPrefWidth(45);
+		
+		table.getColumns().add(col1);
+		table.getColumns().add(col2);
+		table.setPrefSize(160, 400);
+		table.setTranslateX(20);
+		table.setTranslateY(20);
+		
 		Label label = new Label("Project ID");
 		label.setTranslateX(185);
 		label.setTranslateY(70);
 		label.setFont(Font.font(null, FontWeight.BOLD, 15));
 		label.setStyle("-fx-background-color: #f4f4f4;");
-//		label.setScaleY(1.2);
 
-		TextField textField = new TextField(); // create a textfield to enter Customer Project ID for searching for a
-												// project
+		TextField textField = new TextField(); // create a textfield to enter Customer Project ID for searching for a project
 		textField.setTranslateX(260);
 		textField.setTranslateY(70);
 		textField.setPrefWidth(80);
-
+		textField.setText("S-");
+		
 		Button button = new Button("Track"); // create a button for searching for a project and drawing a timeline
 		button.setTranslateX(350);
 		button.setTranslateY(70);
 
-		table.getColumns().add(col1);
-		table.getColumns().add(col2);
-		table.setPrefSize(160, 400);
+		table.getItems().addAll(projectManager.getProjectCollection().getProjects()); // fill the tableview with projects
+		pane.getChildren().addAll(table, textField, label, button);
 
-		col1.setPrefWidth(100);
-		col2.setPrefWidth(45);
-
-		table.setTranslateX(20);
-		table.setTranslateY(20);
-
-		table.getItems().addAll(projectManager.getProjectCollection().getProjects()); // fill the tableview with
-																						// projects
-
-		pane.getChildren().add(table);
-		pane.getChildren().add(textField);
-		pane.getChildren().add(label);
-		pane.getChildren().add(button);
-
-		button.setOnAction((ActionEvent e) -> { // if the rack button is clicked
+		button.setOnAction(e -> { // if the rack button is clicked
 			if (textField.getText().equals("")) { // if the textfield is empty
 				Alert alertError = new Alert(AlertType.ERROR); // show an appropriate alert
 				alertError.setTitle("Error");
@@ -82,15 +70,12 @@ public class UserInterface extends Application {
 			} else {
 				boolean flag = true;
 				String input = textField.getText();
-				for (Project prject : projectManager.getProjectCollection().getProjects()) { // search for a project
-																								// based on Customer
-																								// Project ID
+				for (Project prject : projectManager.getProjectCollection().getProjects()) { // search for a project based on Customer Project ID
 					if (prject.getCustomerID().equals(input)) {
 						table.scrollTo(prject);
 						table.getSelectionModel().select(prject);
 						flag = false;
 					}
-
 				}
 				if (flag) { // a project is not found
 					Alert alertError = new Alert(AlertType.ERROR); // show an appropriate alert
@@ -100,28 +85,38 @@ public class UserInterface extends Application {
 				}
 
 				else { // a project is found
-					textField.setText(""); // set the textfield
+					textField.setText("S-"); // set the textfield
 					Project project = table.getSelectionModel().getSelectedItem();
-					DrawTimeLine d = new DrawTimeLine(project);
-					ScrollPane root = new ScrollPane();
-
-					root.setContent(d.draw());
-					Scene secnodScene = new Scene(root, 1000, 500); // create another scene and stage to show the
-																	// timeline
-					Stage secondStage = new Stage();
-					secondStage.setTitle(project.getCustomerID());
-					secondStage.setScene(secnodScene);
-					secondStage.show();
+					draw(project);
 
 				}
 			}
 		});
+		
+		table.setOnMouseClicked(e -> {
+			Project project = table.getSelectionModel().getSelectedItem();
+			if (project != null)
+				draw(project);
+		});
+		
 
 		Scene scene = new Scene(pane, 1000, 480);
 		stage.setTitle("Projects Tracker");
 		stage.setScene(scene);
 		stage.show();
 
+	}
+	
+	public void draw(Project project) {
+		TimeLine timeLine = new TimeLine(project);
+		ScrollPane root = new ScrollPane();
+
+		root.setContent(timeLine.draw());
+		Scene secnodScene = new Scene(root, 1000, 480); // create another scene and stage to show the timeline
+		Stage secondStage = new Stage();
+		secondStage.setTitle(project.getCustomerID());
+		secondStage.setScene(secnodScene);
+		secondStage.show();
 	}
 
 }
