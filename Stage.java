@@ -1,5 +1,3 @@
-package stage;
-
 import java.util.Date;
 
 public class Stage {
@@ -7,6 +5,7 @@ public class Stage {
 	private int docNum;
 	private String changeIndicator;
 	private Date endDate;
+	private Date endTime;
 	private int newValue;
 	private int oldValue;
 
@@ -60,6 +59,14 @@ public class Stage {
 
 	public void setChangeIndicator(String changeIndicator) {
 		this.changeIndicator = changeIndicator;
+	}
+
+	public Date getEndTime() {
+		return endTime;
+	}
+
+	public void setEndTime(Date endTime) {
+		this.endTime = endTime;
 	}
 
 }
